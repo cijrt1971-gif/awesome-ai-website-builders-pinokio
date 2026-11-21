@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Awesome AI Website Builders</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --border: rgba(140, 140, 160, 0.4);
+      --bg: rgba(245, 246, 248, 0.9);
+      --bg-dark: rgba(24, 27, 34, 0.95);
+      --card: rgba(255, 255, 255, 0.85);
+      --card-dark: rgba(17, 20, 27, 0.9);
+      --accent: #2563eb;
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body {
+      margin: 0;
+      padding: 32px 16px;
+      min-height: 100vh;
+      background: var(--bg);
+      color: inherit;
+      display: flex;
+      justify-content: center;
+    }
+    @media (prefers-color-scheme: dark) { body { background: var(--bg-dark); } }
+    .wrap {
+      width: min(1040px, 100%);
+      padding: 28px;
+      border-radius: 18px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: 0 16px 60px -40px rgba(15, 23, 42, 0.65);
+    }
+    @media (prefers-color-scheme: dark) {
+      .wrap { background: var(--card-dark); box-shadow: 0 16px 60px -40px rgba(0, 0, 0, 0.9); }
+    }
+    header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    h1 { font-size: 1.5rem; margin: 0 0 6px; }
+    .sub { margin: 0; max-width: 70ch; line-height: 1.5; opacity: 0.8; font-size: 0.95rem; }
+    .github {
+      flex: none;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+    }
+    .github:hover { text-decoration: underline; }
+    .toolbar { display: flex; align-items: center; gap: 12px; margin: 22px 0 12px; }
+    #search {
+      flex: 1;
+      font: inherit;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: inherit;
+    }
+    .count { font-size: 0.85rem; opacity: 0.7; white-space: nowrap; }
+    .nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+    .nav a {
+      font-size: 0.8rem;
+      text-decoration: none;
+      color: inherit;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 11px;
+      opacity: 0.85;
+    }
+    .nav a:hover { color: var(--accent); border-color: var(--accent); opacity: 1; }
+    h2 { font-size: 1.05rem; margin: 30px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .intro { font-size: 0.9rem; line-height: 1.6; opacity: 0.85; }
+    .list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+    .entry {
+      padding: 13px 15px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      line-height: 1.5;
+      font-size: 0.92rem;
+      background: rgba(127, 127, 127, 0.04);
+    }
+    .entry a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .entry a:hover { text-decoration: underline; }
+    .muted, .error { opacity: 0.75; }
+    .error { color: #dc2626; opacity: 1; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9em; }
+    footer { margin-top: 32px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 0.8rem; opacity: 0.65; }
+    footer a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Awesome AI Website Builders</h1>
+        <p class="sub">A curated list of AI-powered website builders that create, design, and host websites from a prompt.</p>
+      </div>
+      <a class="github" href="https://github.com/ianberdin/awesome-ai-website-builders" target="_blank" rel="noopener">Source ↗</a>
+    </header>
+
+    <div class="toolbar">
+      <input id="search" type="search" placeholder="Search builders…" autocomplete="off" aria-label="Search builders">
+      <span id="count" class="count"></span>
+    </div>
+
+    <nav id="nav" class="nav" aria-label="Categories"></nav>
+    <main id="content" class="content"><p class="muted">Loading list…</p></main>
+
+    <footer>
+      Content from <a href="https://github.com/ianberdin/awesome-ai-website-builders" target="_blank" rel="noopener">ianberdin/awesome-ai-website-builders</a> (CC0 1.0). Listing is not an endorsement.
+    </footer>
+  </div>
+
+  <script>
+    const content = document.getElementById('content');
+    const nav = document.getElementById('nav');
+    const search = document.getElementById('search');
+    const count = document.getElementById('count');
+
+    function escapeHtml(text) {
+      return text.replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[c]);
+    }
+
+    function inline(text) {
+      return escapeHtml(text)
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    }
+
+    function parse(md) {
+      const lines = md.split(/\r?\n/);
+      const blocks = [];
+      let i = 0;
+      let inContents = false;
+      let headings = 0;
+
+      while (i < lines.length) {
+        const line = lines[i].trim();
+        if (!line || /^\[!\[/.test(line)) { i++; continue; }
+
+        if (/^##\s+Contents\s*$/i.test(line)) { inContents = true; i++; continue; }
+        if (/^#{1,3}\s+/.test(line)) inContents = false;
+        if (inContents) { i++; continue; }
+
+        if (/^#{1,3}\s+/.test(line)) {
+          const match = line.match(/^(#{1,3})\s+(.*)$/);
+          if (match[1].length === 1) { i++; continue; }
+          blocks.push({
+            type: 'heading',
+            level: match[1].length + 1,
+            html: inline(match[2]),
+            id: 'sec-' + (headings++)
+          });
+          i++;
+          continue;
+        }
+
+        if (/^-\s+/.test(line)) {
+          const items = [];
+          while (i < lines.length && /^-\s+/.test(lines[i].trim())) {
+            items.push(inline(lines[i].trim().replace(/^-\s+/, '')));
+            i++;
+          }
+          blocks.push({ type: 'list', items });
+          continue;
+        }
+
+        const paragraph = [line];
+        i++;
+        while (i < lines.length) {
+          const next = lines[i].trim();
+          if (!next || /^#{1,3}\s+/.test(next) || /^-\s+/.test(next) || /^\[!\[/.test(next)) break;
+          paragraph.push(next);
+          i++;
+        }
+        blocks.push({ type: 'p', html: inline(paragraph.join(' ')) });
+      }
+      return blocks;
+    }
+
+    function render(blocks) {
+      content.innerHTML = '';
+      nav.innerHTML = '';
+      for (const block of blocks) {
+        if (block.type === 'heading') {
+          const heading = document.createElement('h2');
+          heading.id = block.id;
+          heading.innerHTML = block.html;
+          content.appendChild(heading);
+
+          const link = document.createElement('a');
+          link.href = '#' + block.id;
+          link.textContent = heading.textContent;
+          nav.appendChild(link);
+        } else if (block.type === 'list') {
+          const list = document.createElement('ul');
+          list.className = 'list';
+          for (const item of block.items) {
+            const li = document.createElement('li');
+            li.className = 'entry';
+            li.innerHTML = item;
+            list.appendChild(li);
+          }
+          content.appendChild(list);
+        } else {
+          const p = document.createElement('p');
+          p.className = 'intro';
+          p.innerHTML = block.html;
+          content.appendChild(p);
+        }
+      }
+    }
+
+    function filter() {
+      const query = search.value.trim().toLowerCase();
+      let matches = 0;
+      for (const entry of content.querySelectorAll('.entry')) {
+        const visible = !query || entry.textContent.toLowerCase().includes(query);
+        entry.hidden = !visible;
+        if (visible) matches++;
+      }
+      for (const heading of content.querySelectorAll('h2')) {
+        const list = heading.nextElementSibling;
+        if (list && list.tagName === 'UL') {
+          const hasVisible = [...list.querySelectorAll('.entry')].some(entry => !entry.hidden);
+          heading.hidden = list.hidden = !!query && !hasVisible;
+        }
+      }
+      count.textContent = query ? matches + (matches === 1 ? ' match' : ' matches') : '';
+    }
+
+    async function load() {
+      try {
+        const response = await fetch('source/README.md', { cache: 'no-store' });
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        render(parse(await response.text()));
+        filter();
+      } catch (error) {
+        content.innerHTML = '<p class="error">Could not load the list (' + error.message + '). Click <strong>Install</strong> in Pinokio first, then reload this page.</p>';
+      }
+    }
+
+    search.addEventListener('input', filter);
+    load();
+  </script>
+</body>
+</html>
